@@ -42,14 +42,14 @@ try:
     unpadded_bytes = decrypted_bytes.rstrip(padding)
     payload_code = unpadded_bytes.decode('utf-8')
 
-    print("\n--- DEKRIPSI BERHASIL ---")
-    print("\n--- ISI PAYLOAD ASLI ---\n")
+    print(f"\n--- DEKRIPSI BERHASIL ---")
+    print(f"Menyimpan payload ke file: {output_filename}")
 
-    # Tampilkan hasilnya
-    print(payload_code)
+    with open(output_filename, 'w', encoding='utf-8') as f:
+        f.write(payload_code)
 
-    print("\n--- AKHIR DARI PAYLOAD ---")
+    print(f"Payload berhasil disimpan! Silakan buka file '{output_filename}' untuk melihat isinya.")
 
 except Exception as e:
-    print(f"\nTerjadi kesalahan selama dekripsi: {e}")
-    print("Pastikan Anda telah menyalin seluruh string Base64 dengan benar dan tidak ada yang terpotong.")
+    print(f"\nTerjadi kesalahan selama proses dekripsi: {e}")
+    print("Pastikan string payload, kunci AES, dan IV sudah benar.")
