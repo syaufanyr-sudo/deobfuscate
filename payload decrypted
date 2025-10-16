@@ -1,0 +1,55 @@
+import base64
+import zlib
+from Crypto.Cipher import AES
+
+# --- Data yang diambil dari kode obfuscated ---
+
+# 1. Data payload terenkripsi
+# GANTI TITIK-TITIK (.....) DENGAN STRING LENGKAP DARI KODE ANDA
+encrypted_payload_b64 = 'eJwACED3v+bQJTFy75lf4c2UiQhUvdP7pO3TW+rDkzvoKdfk6tETWOIv.....'
+encrypted_payload_b64 += 'd+KhYlWJonOoM862j5PT4LGmWmoxBg5h4vyYnYPXzYWUV4vu4Di7l2t/.......'
+
+# 2. Kunci dan IV AES dalam format heksadesimal
+aes_key_hex = '206cb441bba557a33bc558f2f64b01a8'
+aes_iv_hex = 'eefbc5e1a7422ab858270202570bbd65'
+
+# 3. Byte untuk padding
+padding = b'\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10'
+
+# --- Proses Dekripsi ---
+
+print("Memulai proses dekripsi...")
+
+try:
+    # Langkah 1: Base64 Decode
+    print("1. Mendekode dari Base64...")
+    decoded_data = base64.b64decode(encrypted_payload_b64)
+
+    # Langkah 2: Zlib Decompress
+    print("2. Mendekompresi dengan Zlib...")
+    decompressed_data = zlib.decompress(decoded_data)
+
+    # Langkah 3: AES-CBC Decrypt
+    print("3. Mendekripsi dengan AES-CBC...")
+    aes_key = bytes.fromhex(aes_key_hex)
+    aes_iv = bytes.fromhex(aes_iv_hex)
+
+    cipher = AES.new(aes_key, AES.MODE_CBC, aes_iv)
+    decrypted_bytes = cipher.decrypt(decompressed_data)
+
+    # Langkah 4: Hapus padding dan decode ke string
+    print("4. Menghapus padding dan mendekode ke string...")
+    unpadded_bytes = decrypted_bytes.rstrip(padding)
+    payload_code = unpadded_bytes.decode('utf-8')
+
+    print("\n--- DEKRIPSI BERHASIL ---")
+    print("\n--- ISI PAYLOAD ASLI ---\n")
+
+    # Tampilkan hasilnya
+    print(payload_code)
+
+    print("\n--- AKHIR DARI PAYLOAD ---")
+
+except Exception as e:
+    print(f"\nTerjadi kesalahan selama dekripsi: {e}")
+    print("Pastikan Anda telah menyalin seluruh string Base64 dengan benar dan tidak ada yang terpotong.")
